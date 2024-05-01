@@ -1,9 +1,17 @@
 import { User } from "../models/user.js";
 import bcrypt from "bcrypt";
+import nodemailer from "nodemailer";
+
 export const getAllUsers = async (req, res) => {
   try {
+    const allUsers = await User.find({}, "-password"); // Excluding the password field
+    if (allUsers.length === 0) {
+      return res.status(404).json({ message: "No Users Registered" });
+    }
+    return res.status(200).json(allUsers);
   } catch (error) {
     console.error(error);
+    return res.status(500).json({ message: "Internal Server Error" });
   }
 };
 
@@ -57,4 +65,36 @@ export const loginUser = async (req, res) => {
   } catch (error) {
     console.error(error);
   }
+};
+
+export const forgotPassword = async (req, res) => {
+  const { to } = req.body;
+  // Create a transporter object using SMTP transport
+  const transporter = nodemailer.createTransport({
+    service: "Gmail",
+    auth: {
+      user: process.env.mail,
+      pass: process.env.mailPass,
+    },
+  });
+
+  let otp = Math.random() * 1000;
+  // Email options
+  const mailOptions = {
+    from: "belogical0@gmail.com",
+    to: to,
+    subject: "Test Email Blog App",
+    text: "This is a test email sent from Nodemailer.",
+  };
+
+  // Send email
+  transporter.sendMail(mailOptions, function (error, info) {
+    if (error) {
+      console.error("Error occurred:", error);
+      res.status(511).json({ message: "Email failed" });
+    } else {
+      console.log("Email sent:", info.response);
+      res.status(201).json({ message: "Email Sent Succesfully" });
+    }
+  });
 };
