@@ -41,16 +41,19 @@ export const registerUser = async (req, res) => {
 export const loginUser = async (req, res) => {
   try {
     const { email, password } = req.body;
-    const newUser = await User.findOne({ email });
-    if (!newUser) {
+    if (!email || !password) {
+      return res.json({ message: "All fields mandatory" });
+    }
+    const user = await User.findOne({ email });
+    if (!user) {
       return res.status(500).json({ message: "User is not registered" });
     }
 
-    const checkPassword = await bcrypt.compare(newUser.password, password);
-    if (!checkPassword) {
+    const isMatching = await bcrypt.compare(password, user.password);
+    if (!isMatching) {
       return res.status(511).json({ message: "Incorrect Password" });
     }
-    return res.status(200).json({ message: "user logged in" });
+    return res.status(200).json({ message: "User logged in", user: { email } });
   } catch (error) {
     console.error(error);
   }
