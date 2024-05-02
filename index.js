@@ -5,6 +5,8 @@ import cors from "cors";
 import mongoose from "mongoose";
 import { connectToDb } from "./config/db.js";
 import userRoutes from "./routes/user.js";
+import blogRoutes from "./routes/blog.js";
+
 
 const PORT = process.env.PORT || 5000;
 const uri = process.env.MONGOURI;
@@ -16,6 +18,7 @@ app.use(express.json());
 connectToDb(uri);
 
 app.use('/api/v1', userRoutes);
+app.use('/api/v1/blog', blogRoutes);
 
 
 app.listen(PORT, () => {
