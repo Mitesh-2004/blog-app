@@ -8,6 +8,7 @@ router.get("/alluser", getAllUsers);
 router.post("/register", registerUser);
 
 router.post("/login", loginUser);
-router.post("/forgot", forgotPassword);
+
+// router.post("/forgot", forgotPassword);
 
 export default router;
