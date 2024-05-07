@@ -1,4 +1,6 @@
+import mongoose from "mongoose";
 import { Blog } from "../models/blog.js";
+import { User } from "../models/user.js";
 
 export const getAllBlog = async (req, res) => {
   try {
@@ -16,6 +18,20 @@ export const getAllBlog = async (req, res) => {
 
 export const createBlog = async (req, res) => {
   try {
+    const { title, description, image, user } = req.body;
+
+    if (!title || !description || !image || !user) {
+      return res.status(511).json({ message: "Fill All the fields" });
+    }
+    const exisitingUser = await User.find({user});
+    if(!exisitingUser){
+      return res.status(401).json({message:"User not registered! Create a new  account"})
+    }
+    const newBlog = await new Blog(title, description, image, user);
+    const session = await mongoose.startSession()
+    session.startTransaction()
+    await newBlog.save();
+    return res.status(201).json({ message: "New blog Added" });
   } catch (error) {
     console.error(error);
   }

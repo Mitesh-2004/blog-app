@@ -17,6 +17,8 @@ connectToDb(uri);
 
 //handle all user related
 app.use("/api/v1/user", userRoutes);
+
+//handle all the blog releted requests
 app.use("/api/v1/blog", blogRoutes);
 
 app.listen(PORT, () => {
