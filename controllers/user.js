@@ -67,7 +67,7 @@ export const loginUser = async (req, res) => {
   }
 };
 
-export const forgotPassword = async (req, res) => {
+export const sendOtp = async (req, res) => {
   const { to } = req.body;
   // Create a transporter object using SMTP transport
   const transporter = nodemailer.createTransport({
@@ -78,15 +78,15 @@ export const forgotPassword = async (req, res) => {
     },
   });
 
-  let otp = Math.random() * 1000;
+  let otp = Math.ceil(Math.random() * 10000);
   // Email options
   const mailOptions = {
     from: "belogical0@gmail.com",
     to: to,
     subject: "Test Email Blog App",
-    text: "This is a test email sent from Nodemailer.",
+    text: `Your Otp to reset password is ${otp}`,
   };
-
+  console.log(otp);
   // Send email
   transporter.sendMail(mailOptions, function (error, info) {
     if (error) {
